@@ -13,12 +13,9 @@ define(['../pixi', '../images', '../audio'], function (PIXI, images, audio) {
     foxBlur = new PIXI.BlurFilter(),
     mainText = new PIXI.Text("Kitsune Shoujo", { font: "50px Arial", fill: "black" });
 
-  if (images.completed) {
-    setTextures();
-  } else {
-    images.loaded(['smile_male', 'bg'], setTextures);
-  }
-
+  
+  images.loaded(['smile_male', 'bg'], setTextures);
+  
   function setTextures() {
     fox.setTexture(images.smile_male);
     backgroundSprite.setTexture(images.bg);
