@@ -19,5 +19,5 @@ define(function() {
   return {
     combine: combine,
     noOp: noOp
-  }
+  };
 });

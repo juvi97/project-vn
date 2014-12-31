@@ -1,4 +1,4 @@
-define(['images', 'globalState', 'config', 'pixi'], function (images, globalState, config, PIXI) {
+define(['./images', './globalState', './config', './pixi'], function (images, globalState, config, PIXI) {
   'use strict';
 
   var inNovel = false,
@@ -46,11 +46,11 @@ define(['images', 'globalState', 'config', 'pixi'], function (images, globalStat
 
   function openScreen(screen) {
     inNovel = false;
-    require(['screens/' + screen], loadScreen);
+    require(['./screens/' + screen], loadScreen);
   }
 
   function openStory(storyDesc, index) {
-    require(['story/' + storyDesc], function indexStory(story) {
+    require(['./story/' + storyDesc], function indexStory(story) {
       
     });
   }
@@ -59,9 +59,11 @@ define(['images', 'globalState', 'config', 'pixi'], function (images, globalStat
     var image = config.renderer.view.toDataURL(),
         backgroundTexture = PIXI.Texture.fromImage(image);
     
-    require(['overlay/'+screenID], function(screen) {
+    /*
+    require(['./overlay/'+screenID], function(screen) {
       screen.bg.setTexture(backgroundSprite);
     });
+    */
   }
 
   
@@ -69,10 +71,6 @@ define(['images', 'globalState', 'config', 'pixi'], function (images, globalStat
   function advanceSlide() {
     
   }
-
-
-  
-
 
   return {
     openScreen: openScreen,

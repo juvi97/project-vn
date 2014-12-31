@@ -1,4 +1,4 @@
-define(['pixi', 'config'], function(PIXI, config) {
+define(['./pixi', './config'], function(PIXI, config) {
   var fadedBackground = new PIXI.Graphics(),
       fadedBackgroundTexture;
   fadedBackground.beginFill(0x000000, 0.3);

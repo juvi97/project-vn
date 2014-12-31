@@ -1,4 +1,4 @@
-define(['positions'], function (positions) {
+define(['./positions'], function (positions) {
   'use strict';
 
   //baselines
@@ -73,7 +73,7 @@ define(['positions'], function (positions) {
   function leavestageleftfromleft2(sprite, i, frameCount) {
     return animateX(sprite, i, frameCount, positions.left2(sprite), positions.stageLeft(sprite));
   }
-
+ 
   function leavestageleftfromright2(sprite, i, frameCount) {
     return animateX(sprite, i, frameCount, positions.right2(sprite), positions.stageLeft(sprite));
   }

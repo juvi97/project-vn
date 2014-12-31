@@ -1,4 +1,4 @@
-define(['config', 'sc'], function defineAudio(config, SC) {
+define(['./config', './sc'], function defineAudio(config, SC) {
   'use strict';
   var tracks = config.audio,
     titles = [],

@@ -1,4 +1,4 @@
-define(['config'], function (config) {
+define(['./config'], function (config) {
   'use strict';
 
   function stageLeft(sprite) {

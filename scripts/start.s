@@ -50,8 +50,8 @@ id3
   !BeginSlide
   !Speaker: Fox
   !Positions:
-  	Fox: left-2,sitting
-    Falco: right-2,sitting
+  	Fox: left2,sitting
+    Falco: right2,sitting
   !EndPositions
   !Animations:
     Fox: sitting

@@ -1,4 +1,4 @@
-define(['pixi'], function (PIXI) {
+define(['./pixi'], function (PIXI) {
   var width = 800,
     height = 600,
     audio = {
@@ -22,6 +22,6 @@ define(['pixi'], function (PIXI) {
     };
   
   document.querySelector("#container").appendChild(config.renderer.view);
-
+ 
   return config;
 });
