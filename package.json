@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/jtenner/project-vn",
   "dependencies": {
-
+    "webpack": "^1.4.15"
   }
 }
