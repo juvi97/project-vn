@@ -1,10 +1,6 @@
 define(['config', 'sc'], function defineAudio(config, SC) {
   'use strict';
-  var tracks = {
-      'title': '/tracks/183485383',
-      'opening': '/tracks/183008205',
-      'goatFinalBoss': '/tracks/165965394'
-    },
+  var tracks = config.audio,
     titles = [],
     loadedTitles = [],
     callbacks = [],

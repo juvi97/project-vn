@@ -1,24 +1,37 @@
-define(['../pixi', '../images', '../audio'], function (PIXI, images, audio) {
+define(['../pixi', '../images', '../audio', '../vn'], function (PIXI, images, audio, vn) {
   'use strict';
   var mainScreen = {
-    stage: new PIXI.Stage(0xFFFFFF),
-    animation: animation,
-    reset: reset,
-    cleanup: cleanup
-  };
+      stage: new PIXI.Stage(0xFFFFFF),
+      animation: animation,
+      reset: reset,
+      cleanup: cleanup
+    },
+    inScreen = false;
 
   //create sprites and set the textures when they are loaded
   var backgroundSprite = new PIXI.Sprite(),
     fox = new PIXI.Sprite(),
     foxBlur = new PIXI.BlurFilter(),
-    mainText = new PIXI.Text("Kitsune Shoujo", { font: "50px Arial", fill: "black" });
+    mainText = new PIXI.Text("Kitsune Shoujo", {
+      font: "50px Arial",
+      fill: "black"
+    });
 
-  
+
   images.loaded(['smile_male', 'bg'], setTextures);
-  
+
   function setTextures() {
     fox.setTexture(images.smile_male);
     backgroundSprite.setTexture(images.bg);
+    backgroundSprite.width = 800;
+    backgroundSprite.height = 600;
+    backgroundSprite.interactive = true;
+    backgroundSprite.mousedown = function () {
+      if (inScreen) {
+        vn.openStory('Section1', 0);
+        inScreen = false;
+      }
+    };
   }
 
   //animation vars
@@ -28,7 +41,7 @@ define(['../pixi', '../images', '../audio'], function (PIXI, images, audio) {
     rotationStep = 0.0025;
 
   fox.filters = [foxBlur];
-  
+
   function animation() {
     i++;
 
@@ -36,7 +49,7 @@ define(['../pixi', '../images', '../audio'], function (PIXI, images, audio) {
       fox.alpha += alphaStep;
       backgroundSprite.alpha += alphaStep;
     }
-    
+
     //animate mainText
     if (i > 120) {
       mainText.alpha += alphaStep;
@@ -51,7 +64,7 @@ define(['../pixi', '../images', '../audio'], function (PIXI, images, audio) {
   function reset(startNovel) {
     //bg alpha
     backgroundSprite.alpha = 0;
-    
+
     //anchored
     fox.anchor.x = 0.5;
     fox.anchor.y = 0.5;
@@ -68,32 +81,33 @@ define(['../pixi', '../images', '../audio'], function (PIXI, images, audio) {
     fox.scale.y = 0.2;
 
     //blur
-    fox.rotation = -rotationStep*30;
+    fox.rotation = -rotationStep * 30;
     foxBlur.blur = 1;
-    
+
     //text alpha
     mainText.alpha = 0;
-    
+
     mainText.position.x = 200;
     mainText.position.y = 100;
-    
+
     mainText.anchor.x = 0.5;
     mainText.anchor.y = 0.5;
-    
-    mainText.rotation = rotationStep*30;
-    
-    images.loaded(['smile_male', 'bg'], function() {
+
+    mainText.rotation = rotationStep * 30;
+
+    images.loaded(['smile_male', 'bg'], function () {
+      inScreen = true;
       startNovel();
-      audio.loaded(function() {
+      audio.loaded(function () {
         audio.title.play(audio.repeatSong);
       });
     });
   }
-  
+
   function cleanup() {
-    
+
   }
-  
+
   mainScreen.stage.addChild(backgroundSprite);
   mainScreen.stage.addChild(fox);
   mainScreen.stage.addChild(mainText);

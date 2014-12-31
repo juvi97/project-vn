@@ -8,3 +8,4 @@ var fs = require('fs'),
 console.log(imageTags);
 
 fs.writeFileSync('test.txt', imageTags.join(''));
+
