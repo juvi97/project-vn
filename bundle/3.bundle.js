@@ -1,1 +1,90 @@
-webpackJsonp([3],[,,,,,,,function(t,e,i){function r(t){return i(n(t))}function n(t){return s[t]||function(){throw new Error("Cannot find module '"+t+"'.")}()}var s={"./Section1":9,"./Section1.js":9};r.keys=function(){return Object.keys(s)},r.resolve=n,t.exports=r,r.id=7},,function(t,e,i){var r,n;r=[i(11),i(2),i(3),i(5),i(12),i(10),i(1)],n=function(){"use strict"}.apply(e,r),!(void 0!==n&&(t.exports=n))},function(t,e,i){var r,n;r=[i(5),i(13)],n=function(t,e){"use strict";function i(){this.play(c)}function r(t){t()}function n(){return[].push.apply(u,[].slice.call(arguments)),p.completed&&setTimeout(o),this}function s(t){e.stream(a[t],d,function(e){p[t]=e,l.push(t),l.length===h.length&&(p.completed=!0,o())})}function o(){u.forEach(r),u=[]}var a=t.audio,h=[],l=[],u=[],c={onfinish:i},d={useHTML5Audio:!0,preferFlash:!1},p={loaded:n,completed:!1,repeatSong:c};return e.initialize({client_id:"10b30c7d0c8854864b5901f3c7ef47d9"}),h=Object.getOwnPropertyNames(a),h.forEach(s),p}.apply(e,r),!(void 0!==n&&(t.exports=n))},function(t,e,i){var r,n;r=[i(4),i(14)],n=function(){"use strict";var t={};return t}.apply(e,r),!(void 0!==n&&(t.exports=n))},function(t,e,i){var r;r=function(){"use strict";function t(t){t()}function e(){var e=[].slice.call(arguments);return function(){e.forEach(t)}}function i(){return!0}return{combine:e,noOp:i}}.call(e,i,e,t),!(void 0!==r&&(t.exports=r))},function(t,e,i){var r;r=function(){"use strict";return SC}.call(e,i,e,t),!(void 0!==r&&(t.exports=r))},function(t,e,i){var r,n;r=[i(5)],n=function(){"use strict"}.apply(e,r),!(void 0!==n&&(t.exports=n))}]);
+webpackJsonp([3],{
+
+/***/ 7:
+/***/ function(module, exports, __webpack_require__) {
+
+	var map = {
+		"./start": 9,
+		"./start.js": 9
+	};
+	function webpackContext(req) {
+		return __webpack_require__(webpackContextResolve(req));
+	};
+	function webpackContextResolve(req) {
+		return map[req] || (function() { throw new Error("Cannot find module '" + req + "'.") }());
+	};
+	webpackContext.keys = function webpackContextKeys() {
+		return Object.keys(map);
+	};
+	webpackContext.resolve = webpackContextResolve;
+	module.exports = webpackContext;
+	webpackContext.id = 7;
+
+
+/***/ },
+
+/***/ 9:
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
+	  return {
+	    "actors": ["fox", "falco", "jason"],
+	    "bgs": ["bg1", "bg2"],
+	    "music": ["id1", "id2", "id3"],
+	    "colorMap": {
+	      "jason": "red",
+	      "fox": "green",
+	      "falco": "blue"
+	    },
+	    "choices": {
+	      "waveshine": "WaveShine Jason Zimmerman",
+	      "shnair": "Do a Shorthop Nair"
+	    },
+	    "slides": [{
+	      "slideText": "",
+	      "slideBg": "",
+	      "slideSpeaker": "",
+	      "slideAnimations": {},
+	      "slidePositions": {
+	        "fox": "left-2",
+	        "falco": "right-2",
+	        "jason": ""
+	      },
+	      "slideMusic": {
+	        "id1": "stop",
+	        "id2": "pause",
+	        "id3": "stop"
+	      },
+	      "slideMoods": {
+	        "fox": "neutral",
+	        "falco": "happy",
+	        "jason": ""
+	      }
+	    }, {
+	      "slideText": "",
+	      "slideBg": "",
+	      "slideSpeaker": "",
+	      "slideAnimations": {},
+	      "slidePositions": {
+	        "fox": "left-2,sitting",
+	        "falco": "right-2,sitting",
+	        "jason": ""
+	      },
+	      "slideMusic": {
+	        "id1": "stop",
+	        "id2": "pause",
+	        "id3": "stop"
+	      },
+	      "slideMoods": {
+	        "fox": "neutral",
+	        "falco": "happy",
+	        "jason": ""
+	      }
+	    }],
+	    "selected": "\r\n//javascript goes here\r\nif (choice === 'waveshine') {\r\n\tnovelData.fox++; // add a point to fox\r\n\tnovelData.falco--; // remove a point from falco\r\n}\r\n"
+	  };
+	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }
+
+});

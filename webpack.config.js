@@ -7,10 +7,11 @@ module.exports = {
     publicPath: "bundle/"
   },
   plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false
-      }
-    })
+    //new webpack.optimize.UglifyJsPlugin({
+    //  compress: {
+    //    warnings: false
+    //  }
+    //}),
+    new webpack.IgnorePlugin(/.*\.s/i)
   ]
 };

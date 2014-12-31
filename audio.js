@@ -56,7 +56,7 @@ define(['./config', './sc'], function defineAudio(config, SC) {
   });
 
   titles = Object.getOwnPropertyNames(tracks);
-
-  titles.forEach(loadTitle);
+  window.addEventListener("load", [].forEach.bind(titles, loadTitle), false);
+  
   return audio;
 });

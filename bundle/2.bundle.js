@@ -1,1 +1,229 @@
-webpackJsonp([2],{6:function(t,e,i){function r(t){return i(n(t))}function n(t){return s[t]||function(){throw new Error("Cannot find module '"+t+"'.")}()}var s={"./main":8,"./main.js":8};r.keys=function(){return Object.keys(s)},r.resolve=n,t.exports=r,r.id=6},8:function(t,e,i){var r,n;r=[i(2),i(3),i(10),i(1)],n=function(t,e,i,r){"use strict";function n(){c.setTexture(e.smile_male),u.setTexture(e.bg),u.width=800,u.height=600,u.interactive=!0,u.mousedown=function(){l&&(r.openStory("Section1",0),l=!1)}}function s(){return f++,61>f&&(c.alpha+=g,u.alpha+=g),f>120?(p.alpha+=g,p.rotation-=v):(c.rotation+=v,d.blur+=m),f>=180}function o(t){u.alpha=0,c.anchor.x=.5,c.anchor.y=.5,c.position.x=600,c.position.y=400,c.alpha=0,c.scale.x=.2,c.scale.y=.2,c.rotation=30*-v,d.blur=1,p.alpha=0,p.position.x=200,p.position.y=100,p.anchor.x=.5,p.anchor.y=.5,p.rotation=30*v,e.loaded(["smile_male","bg"],function(){l=!0,t(),i.loaded(function(){i.title.play(i.repeatSong)})})}function a(){}var h={stage:new t.Stage(16777215),animation:s,reset:o,cleanup:a},l=!1,u=new t.Sprite,c=new t.Sprite,d=new t.BlurFilter,p=new t.Text("Kitsune Shoujo",{font:"50px Arial",fill:"black"});e.loaded(["smile_male","bg"],n);var f=0,g=1/60,m=.5/120,v=.0025;return c.filters=[d],h.stage.addChild(u),h.stage.addChild(c),h.stage.addChild(p),h}.apply(e,r),!(void 0!==n&&(t.exports=n))},10:function(t,e,i){var r,n;r=[i(5),i(13)],n=function(t,e){"use strict";function i(){this.play(c)}function r(t){t()}function n(){return[].push.apply(u,[].slice.call(arguments)),p.completed&&setTimeout(o),this}function s(t){e.stream(a[t],d,function(e){p[t]=e,l.push(t),l.length===h.length&&(p.completed=!0,o())})}function o(){u.forEach(r),u=[]}var a=t.audio,h=[],l=[],u=[],c={onfinish:i},d={useHTML5Audio:!0,preferFlash:!1},p={loaded:n,completed:!1,repeatSong:c};return e.initialize({client_id:"10b30c7d0c8854864b5901f3c7ef47d9"}),h=Object.getOwnPropertyNames(a),h.forEach(s),p}.apply(e,r),!(void 0!==n&&(t.exports=n))},13:function(t,e,i){var r;r=function(){"use strict";return SC}.call(e,i,e,t),!(void 0!==r&&(t.exports=r))}});
+webpackJsonp([2],[
+/* 0 */,
+/* 1 */,
+/* 2 */,
+/* 3 */,
+/* 4 */,
+/* 5 */,
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var map = {
+		"./main": 8,
+		"./main.js": 8
+	};
+	function webpackContext(req) {
+		return __webpack_require__(webpackContextResolve(req));
+	};
+	function webpackContextResolve(req) {
+		return map[req] || (function() { throw new Error("Cannot find module '" + req + "'.") }());
+	};
+	webpackContext.keys = function webpackContextKeys() {
+		return Object.keys(map);
+	};
+	webpackContext.resolve = webpackContextResolve;
+	module.exports = webpackContext;
+	webpackContext.id = 6;
+
+
+/***/ },
+/* 7 */,
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2), __webpack_require__(3), __webpack_require__(10), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_RESULT__ = function (PIXI, images, audio, vn) {
+	  'use strict';
+	  var mainScreen = {
+	      stage: new PIXI.Stage(0xFFFFFF),
+	      animation: animation,
+	      reset: reset,
+	      cleanup: cleanup
+	    },
+	    inScreen = false;
+
+	  //create sprites and set the textures when they are loaded
+	  var backgroundSprite = new PIXI.Sprite(),
+	    fox = new PIXI.Sprite(),
+	    foxBlur = new PIXI.BlurFilter(),
+	    mainText = new PIXI.Text("Kitsune Shoujo", {
+	      font: "50px Arial",
+	      fill: "black"
+	    });
+
+
+	  images.loaded(['smile_male', 'bg'], setTextures);
+
+	  function setTextures() {
+	    fox.setTexture(images.smile_male);
+	    backgroundSprite.setTexture(images.bg);
+	    backgroundSprite.width = 800;
+	    backgroundSprite.height = 600;
+	    backgroundSprite.interactive = true;
+	    backgroundSprite.mousedown = function () {
+	      if (inScreen) {
+	        vn.openStory('Section1', 0);
+	        inScreen = false;
+	      }
+	    };
+	  }
+
+	  //animation vars
+	  var i = 0,
+	    alphaStep = 1 / 60,
+	    blurStep = 0.5 / 120,
+	    rotationStep = 0.0025;
+
+	  fox.filters = [foxBlur];
+
+	  function animation() {
+	    i++;
+
+	    if (i < 61) {
+	      fox.alpha += alphaStep;
+	      backgroundSprite.alpha += alphaStep;
+	    }
+
+	    //animate mainText
+	    if (i > 120) {
+	      mainText.alpha += alphaStep;
+	      mainText.rotation -= rotationStep;
+	    } else {
+	      fox.rotation += rotationStep;
+	      foxBlur.blur += blurStep;
+	    }
+	    return i >= 180;
+	  }
+
+	  function reset(startNovel) {
+	    //bg alpha
+	    backgroundSprite.alpha = 0;
+
+	    //anchored
+	    fox.anchor.x = 0.5;
+	    fox.anchor.y = 0.5;
+
+	    //position
+	    fox.position.x = 600;
+	    fox.position.y = 400;
+
+	    //alpha
+	    fox.alpha = 0;
+
+	    //scale
+	    fox.scale.x = 0.2;
+	    fox.scale.y = 0.2;
+
+	    //blur
+	    fox.rotation = -rotationStep * 30;
+	    foxBlur.blur = 1;
+
+	    //text alpha
+	    mainText.alpha = 0;
+
+	    mainText.position.x = 200;
+	    mainText.position.y = 100;
+
+	    mainText.anchor.x = 0.5;
+	    mainText.anchor.y = 0.5;
+
+	    mainText.rotation = rotationStep * 30;
+
+	    images.loaded(['smile_male', 'bg'], function () {
+	      inScreen = true;
+	      startNovel();
+	      audio.loaded(function () {
+	        audio.title.play(audio.repeatSong);
+	      });
+	    });
+	  }
+
+	  function cleanup() {
+
+	  }
+
+	  mainScreen.stage.addChild(backgroundSprite);
+	  mainScreen.stage.addChild(fox);
+	  mainScreen.stage.addChild(mainText);
+	  return mainScreen;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ },
+/* 9 */,
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(5), __webpack_require__(11)], __WEBPACK_AMD_DEFINE_RESULT__ = function defineAudio(config, SC) {
+	  'use strict';
+	  var tracks = config.audio,
+	    titles = [],
+	    loadedTitles = [],
+	    callbacks = [],
+	    repeatSong = {
+	      onfinish: repeatSongFunc
+	    },
+	    html5AudioOptions = {
+	      useHTML5Audio: true,
+	      preferFlash: false
+	    },
+	    audio = {
+	      loaded: loaded,
+	      completed: false,
+	      repeatSong: repeatSong
+	    };
+
+	  function repeatSongFunc() {
+	    this.play(repeatSong);
+	  }
+
+	  function exec(func) {
+	    func();
+	  }
+
+	  function loaded() {
+	    [].push.apply(callbacks, [].slice.call(arguments));
+
+	    if (audio.completed) {
+	      setTimeout(execCallbacks);
+	    }
+
+	    return this;
+	  }
+
+	  function loadTitle(title) {
+	    SC.stream(tracks[title], html5AudioOptions, function (sound) {
+	      audio[title] = sound;
+	      loadedTitles.push(title);
+	      if (loadedTitles.length === titles.length) {
+	        audio.completed = true;
+	        execCallbacks();
+	      }
+	    });
+	  }
+
+	  function execCallbacks() {
+	    callbacks.forEach(exec);
+	    callbacks = [];
+	  }
+
+	  SC.initialize({
+	    client_id: '10b30c7d0c8854864b5901f3c7ef47d9'
+	  });
+
+	  titles = Object.getOwnPropertyNames(tracks);
+	  window.addEventListener("load", [].forEach.bind(titles, loadTitle), false);
+	  
+	  return audio;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function() {
+	  'use strict';
+	  
+	  return SC;
+	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }
+]);

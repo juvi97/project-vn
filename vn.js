@@ -50,7 +50,7 @@ define(['./images', './globalState', './config', './pixi'], function (images, gl
   }
 
   function openStory(storyDesc, index) {
-    require(['./story/' + storyDesc], function indexStory(story) {
+    require(['./scripts/' + storyDesc], function indexStory(story) {
       
     });
   }
