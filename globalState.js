@@ -1,4 +1,4 @@
-define(['config', 'pixi'], function(config, PIXI){
+define(['./config', './pixi'], function(config, PIXI){
   'use strict';
   var animationFuncs = [],
       _stage = new PIXI.Stage(0x000000),

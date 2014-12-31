@@ -1,4 +1,4 @@
-define(['pixi'], function (PIXI) {
+define(['./pixi'], function (PIXI) {
   'use strict';
 
   var imageQuery = [].slice.call(document.querySelectorAll("img")),

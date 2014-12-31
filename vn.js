@@ -1,11 +1,8 @@
-define(['images', 'globalState', 'config'], function (images, globalState, config) {
+define(['./images', './globalState', './config', './pixi'], function (images, globalState, config, PIXI) {
   'use strict';
 
   var inNovel = false,
-    currentStory = {
-      index: 0,
-      desc: ""
-    },
+    lastCalledNextSlide = Date.now(),
     runAnimation = false,
     oldScreen,
     oldStory;
@@ -49,68 +46,31 @@ define(['images', 'globalState', 'config'], function (images, globalState, confi
 
   function openScreen(screen) {
     inNovel = false;
-    require(['screens/' + screen], loadScreen);
+    require(['./screens/' + screen], loadScreen);
   }
 
   function openStory(storyDesc, index) {
-    require(['story/' + storyDesc], function indexStory(story) {
-      inNovel = true;
-
-      if (typeof oldStory !== 'undefined') {
-        oldStory.cleanup();
-      }
-
-      //set current references for save screen info
-      currentStory.desc = storyDesc;
-      currentStory.index = index || 0;
-      //all set
-      oldStory = story;
-
-      story.initialize();
-
-      globalState.setStage(story.scriptStage.stage);
-      currentStory.index = -1;
-      advanceSlide();
-      globalState.render();
+    require(['./story/' + storyDesc], function indexStory(story) {
+      
     });
   }
 
-  function overlayScreen(screen) {
-
+  function overlayScreen(screenID) {
+    var image = config.renderer.view.toDataURL(),
+        backgroundTexture = PIXI.Texture.fromImage(image);
+    
+    /*
+    require(['./overlay/'+screenID], function(screen) {
+      screen.bg.setTexture(backgroundSprite);
+    });
+    */
   }
 
-  function animateText(text) {
-    var i = 0,
-      textSpeed = config.textSpeed,
-      textSprite = oldStory.scriptStage.text;
-    textSprite.setText("");
-
-    return function () {
-      i += textSpeed;
-      textSprite.setText(text.slice(0, i));
-      return i >= text.length;
-    };
-  }
+  
 
   function advanceSlide() {
-    var slide;
-    if (inNovel) {
-      currentStory.index += 1;
-      if (currentStory.index >= oldStory.script.length) {
-        overlayScreen(oldStory.choiceScreen);
-      } else {
-        slide = oldStory.script[currentStory.index];
-        globalState.addAnimation(animateText(slide.text), slide.animation);
-        slide.initialize();
-        oldStory.scriptStage.speaker.setText(slide.speaker);
-        globalState.runAnimation();
-      }
-    }
+    
   }
-
-
-  document.addEventListener('click', advanceSlide);
-
 
   return {
     openScreen: openScreen,
