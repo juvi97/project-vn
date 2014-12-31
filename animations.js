@@ -1,4 +1,4 @@
-define(['config'], function (config) {
+define(['positions'], function (positions) {
   'use strict';
 
   //baselines
@@ -19,99 +19,99 @@ define(['config'], function (config) {
 
   //sitting or standing
   function sitting(sprite, i, frameCount) {
-    return animateY(sprite, i, frameCount, config.height / 2, config.height / 2 + 100);
+    return animateY(sprite, i, frameCount, positions.standing(sprite), positions.sitting(sprite));
   }
 
   function standing(sprite, i, frameCount) {
-    return animateY(sprite, i, frameCount, config.height / 2 + 100, config.height / 2);
+    return animateY(sprite, i, frameCount, positions.sitting(sprite), positions.standing(sprite));
   }
 
   //stage entrances
   function enterstagelefttoleft2(sprite, i, frameCount) {
-    return animateX(sprite, i, frameCount, -sprite.width / 2, config.width / 3);
+    return animateX(sprite, i, frameCount, positions.stageLeft(sprite), positions.left2(sprite));
   }
 
   function enterstagelefttoright2(sprite, i, frameCount) {
-    return animateX(sprite, i, frameCount, -sprite.width / 2, 2 * config.width / 3);
+    return animateX(sprite, i, frameCount, positions.stageLeft(sprite), positions.right2(sprite));
   }
 
   function enterstagerighttoleft2(sprite, i, frameCount) {
-    return animateX(sprite, i, frameCount, (config.width + sprite.width / 2), config.width / 3);
+    return animateX(sprite, i, frameCount, positions.stageRight(sprite), positions.left2(sprite));
   }
 
   function enterstagerighttoright2(sprite, i, frameCount) {
-    return animateX(sprite, i, frameCount, (config.width + sprite.width / 2), 2 * config.width / 3);
+    return animateX(sprite, i, frameCount, positions.stageRight(sprite), positions.right2(sprite));
   }
 
   function enterstagerighttocenter(sprite, i, frameCount) {
-    return animateX(sprite, i, frameCount, (config.width + sprite.width / 2), config.width / 2);
+    return animateX(sprite, i, frameCount, positions.stageRight(sprite), positions.center(sprite));
   }
 
   function enterstagelefttocenter(sprite, i, frameCount) {
-    return animateX(sprite, i, frameCount, -sprite.width / 2, config.width / 2);
+    return animateX(sprite, i, frameCount, positions.stageLeft(sprite), positions.center(sprite));
   }
 
   //onscreens
   function centertoleft2(sprite, i, frameCount) {
-    return animateX(sprite, i, frameCount, config.width / 2, config.width / 3);
+    return animateX(sprite, i, frameCount, positions.center(sprite), positions.left2(sprite));
   }
 
   function centertoright2(sprite, i, frameCount) {
-    return animateX(sprite, i, frameCount, config.width / 2, 2 * config.width / 3);
+    return animateX(sprite, i, frameCount, positions.center(sprite), positions.right2(sprite));
   }
 
   function right2tocenter(sprite, i, frameCount) {
-    return animateX(sprite, i, frameCount, 2 * config.width / 3, config.width / 2);
+    return animateX(sprite, i, frameCount, positions.right2(sprite), positions.center(sprite));
   }
 
   function left2tocenter(sprite, i, frameCount) {
-    return animateX(sprite, i, frameCount, config.width / 3, config.width / 2);
+    return animateX(sprite, i, frameCount, positions.left2(sprite), positions.center(sprite));
   }
 
 
   //exit
   function leavestageleftfromleft2(sprite, i, frameCount) {
-    return animateX(sprite, i, frameCount, config.width / 3, -sprite.width / 2);
+    return animateX(sprite, i, frameCount, positions.left2(sprite), positions.stageLeft(sprite));
   }
 
   function leavestageleftfromright2(sprite, i, frameCount) {
-    return animateX(sprite, i, frameCount, 2 * config.width / 3, -sprite.width / 2);
+    return animateX(sprite, i, frameCount, positions.right2(sprite), positions.stageLeft(sprite));
   }
 
   function leavestageleftfromcenter(sprite, i, frameCount) {
-    return animateX(sprite, i, frameCount, config.width / 2, -sprite.width / 2);
+    return animateX(sprite, i, frameCount, positions.center(sprite), positions.stageLeft(sprite));
   }
 
   function leavestagerightfromcenter(sprite, i, frameCount) {
-    return animateX(sprite, i, frameCount, config.width / 2, config.width + sprite.width / 2);
+    return animateX(sprite, i, frameCount, positions.center(sprite), positions.stageRight(sprite));
   }
 
   function leavestagerightfromright2(sprite, i, frameCount) {
-    return animateX(sprite, i, frameCount, 2 * config.width / 3, config.width + sprite.width / 2);
+    return animateX(sprite, i, frameCount, positions.right2(sprite), positions.stageRight(sprite));
   }
 
   function leavestagerightfromleft2(sprite, i, frameCount) {
-    return animateX(sprite, i, frameCount, config.width / 3, config.width + sprite.width / 2);
+    return animateX(sprite, i, frameCount, positions.left2(sprite), positions.stageRight(sprite));
   }
 
   function falloverright(sprite, i, frameCount) {
-    animateY(sprite, i, frameCount, config.height / 2, config.height);
-    return animateRotation(sprite, i, frameCount, 0, Math.PI / 2);
+    animateY(sprite, i, frameCount, positions.centerHeight(sprite), positions.bottomHeight(sprite));
+    return animateRotation(sprite, i, frameCount, 0, positions.fallRight(sprite));
   }
 
   function falloverleft(sprite, i, frameCount) {
-    animateY(sprite, i, frameCount, config.height / 2, config.height);
-    return animateRotation(sprite, i, frameCount, 0, -Math.PI / 2);
+    animateY(sprite, i, frameCount, positions.centerHeight(sprite), positions.bottomHeight(sprite));
+    return animateRotation(sprite, i, frameCount, 0, positions.fallLeft(sprite));
   }
 
   function getupfromright(sprite, i, frameCount) {
-    animateY(sprite, i, frameCount, config.height, config.height / 2);
-    return animateRotation(sprite, i, frameCount, -Math.PI / 2, 0);
+    animateY(sprite, i, frameCount, positions.bottomHeight(sprite), positions.centerHeight(sprite));
+    return animateRotation(sprite, i, frameCount, positions.fallRight(sprite), 0);
   }
 
   function getupfromleft(sprite, i, frameCount) {
-    animateY(sprite, i, frameCount, config.height, config.height / 2);
-    return animateRotation(sprite, i, frameCount, -Math.PI / 2, 0);
+    animateY(sprite, i, frameCount, positions.bottomHeight(sprite), positions.centerHeight(sprite));
+    return animateRotation(sprite, i, frameCount, positions.fallLeft(sprite), 0);
   }
 
   return {
