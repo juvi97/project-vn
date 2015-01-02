@@ -3,7 +3,7 @@ webpackJsonp([1],[
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(3), __webpack_require__(4), __webpack_require__(5), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_RESULT__ = function (images, globalState, config, PIXI) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(4), __webpack_require__(5), __webpack_require__(6), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_RESULT__ = function (images, globalState, config, PIXI) {
 	  'use strict';
 
 	  var inNovel = false,
@@ -51,13 +51,7 @@ webpackJsonp([1],[
 
 	  function openScreen(screen) {
 	    inNovel = false;
-	    __webpack_require__.e/* require */(2, function(__webpack_require__) { var __WEBPACK_AMD_REQUIRE_ARRAY__ = [__webpack_require__(6)("./" + screen)]; (loadScreen.apply(null, __WEBPACK_AMD_REQUIRE_ARRAY__));});
-	  }
-
-	  function openStory(storyDesc, index) {
-	    __webpack_require__.e/* require */(3, function(__webpack_require__) { var __WEBPACK_AMD_REQUIRE_ARRAY__ = [__webpack_require__(7)("./" + storyDesc)]; (function indexStory(story) {
-	      
-	    }.apply(null, __WEBPACK_AMD_REQUIRE_ARRAY__));});
+	    __webpack_require__.e/* require */(2, function(__webpack_require__) { var __WEBPACK_AMD_REQUIRE_ARRAY__ = [__webpack_require__(7)("./" + screen)]; (loadScreen.apply(null, __WEBPACK_AMD_REQUIRE_ARRAY__));});
 	  }
 
 	  function overlayScreen(screenID) {
@@ -71,16 +65,9 @@ webpackJsonp([1],[
 	    */
 	  }
 
-	  
-
-	  function advanceSlide() {
-	    
-	  }
-
 	  return {
 	    openScreen: openScreen,
-	    overlayScreen: overlayScreen,
-	    openStory: openStory
+	    overlayScreen: overlayScreen
 	  };
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
@@ -111,13 +98,298 @@ webpackJsonp([1],[
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2)], __WEBPACK_AMD_DEFINE_RESULT__ = function (PIXI) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(6), __webpack_require__(5), __webpack_require__(8), __webpack_require__(12), __webpack_require__(13), __webpack_require__(2), __webpack_require__(4), __webpack_require__(9), __webpack_require__(10)], __WEBPACK_AMD_DEFINE_RESULT__ = function (config, globalState, generateGameId, speakerBox, textBox, PIXI, images, audio, animations) {
 	  'use strict';
+	  var exports = {},
+	    currentGameData = {},
+	    currentScriptData = [],
+	    currentScriptIndex = 0,
+	    currentScriptID = "",
+	    currentEndIndex = 0,
+	    currentActiveIndex = 0,
+	    currentActiveScriptID = "",
+	    currentStage = new PIXI.Stage(),
+	    bgSprite = new PIXI.Sprite(),
+	    textBoxSprite = new PIXI.Sprite(textBox),
+	    mainTextBox = new PIXI.Text("", config.mainTextFont),
+	    mainSpeakerBox = new PIXI.Text("", config.mainTextFont),
+	    speakerBoxSprite = new PIXI.Sprite(speakerBox),
+	    currentActors = [],
+	    currentActorTextures = {},
+	    currentActorSprites = {},
+	    currentBgs,
+	    currentMusic,
+	    currentColorMap,
+	    currentChoices,
+	    currentSelected;
 
+
+	  mainTextBox.anchor.x = 0.5;
+	  mainTextBox.anchor.y = 0.5;
+	  mainTextBox.position.x = textBoxSprite.width / 2;
+	  mainTextBox.position.y = textBoxSprite.height / 2;
+	  textBoxSprite.addChild(mainTextBox);
+
+	  mainSpeakerBox.anchor.x = 0.5;
+	  mainSpeakerBox.anchor.y = 0.5;
+	  mainSpeakerBox.position.x = speakerBoxSprite.width / 2;
+	  mainSpeakerBox.position.y = speakerBoxSprite.height / 2;
+	  speakerBoxSprite.addChild(mainSpeakerBox);
+
+	  function overlayChoices() {
+	    //overlay the choices at 60% of the screens height divided evenly
+	    var choices = Object.getOwnPropertyNames(currentChoices),
+	      step = config.height * 0.6 / (choices.length + 2);
+	    choices.forEach(function (choice, index) {
+	      var text = currentChoices[choice],
+	        sprite = new PIXI.Sprite(speakerBox),
+	        textbox = new PIXI.Text(text, config.mainTextFont);
+
+	      function selected() {
+	        currentSelected(choice, currentGameData, loadNewChapter);
+	        //add global event listeners
+	      }
+
+	      //textbox
+	      textbox.position.x = sprite.width / 2;
+	      textbox.position.y = sprite.height / 2;
+	      textbox.anchor.x = 0.5;
+	      textbox.anchor.y = 0.5;
+
+	      //clickbox
+	      sprite.addChild(textbox);
+	      sprite.interactive = true;
+	      sprite.buttonMode = true;
+	      sprite.mouseup = selected;
+	      sprite.position.y = (index + 1) * step;
+	      sprite.position.x = config.width / 2;
+	      currentStage.addChild(sprite);
+	    });
+
+	    globalState.render();
+	    //remove global event listeners
+	  }
+
+	  function gotoChapter(chapterID) {
+
+	  }
+
+
+	  var lastRun = 0;
+
+	  function advanceSlide() {
+	    var now = Date.now(),
+	      animationFunctions = [],
+	      nextChapterIndex,
+	      nextChapterID,
+	      slide,
+	      textIndex = 0;
+
+	    function animateText() {
+	      textIndex += config.textSpeed;
+	      mainTextBox.setText(slide.slideText.slice(0, textIndex));
+	      return textIndex > slide.slideText.length;
+	    }
+	    if (now - lastRun > 200) {
+	      lastRun = now;
+	    } else {
+	      return;
+	    }
+
+	    currentActiveIndex += 1;
+	    if (currentActiveIndex > currentEndIndex && currentScriptID === currentActiveScriptID) {
+	      //time to show the choices
+	      overlayChoices();
+	    } else {
+	      //next slide and animate actors
+	      if (currentActiveIndex > currentEndIndex) {
+	        //advance the history to the next chapter without the choices
+	        nextChapterIndex = currentGameData.seenChapters.indexOf(currentActiveScriptID) + 1;
+	        nextChapterID = currentGameData.seenChapters[nextChapterIndex];
+	        gotoChapter(nextChapterID, currentGameData.chaptersRange[nextChapterID][0]);
+	      }
+
+	      slide = currentScriptData[currentActiveIndex];
+
+	      currentActors.forEach(function (actorID) {
+	        var func,
+	          sprite = currentActorSprites[actorID];
+
+	        //set mood
+	        currentActorSprites[actorID].setTexture(images[actorID + ":" + slide.slideMoods[actorID]]);
+
+	        //animations and position setting (see createAnimationFunction for more info)
+	        func = animations.createAnimationFunction(sprite, slide.slidePositions[actorID]);
+	        if (slide.slideAnimation) {
+	          animationFunctions.push(func);
+	        }
+	      });
+
+	      mainSpeakerBox.setText(slide.slideSpeaker);
+
+
+	      animationFunctions.push(animateText);
+	      if (animationFunctions.length > 0) {
+	        globalState.addAnimation.apply(globalState, animationFunctions);
+	        globalState.runAnimation();
+	      } else {
+	        globalState.render();
+	      }
+	      /*
+	        "slideText": "",
+	        "slideBg": "",
+	        "slideSpeaker": "",
+	        "slideAnimations": {},
+	        "slidePositions": {
+	          "fox": "left-2",
+	          "falco": "right-2",
+	          "jason": ""
+	        },
+	        "slideMusic": {
+	          "id1": "stop",
+	          "id2": "pause",
+	          "id3": "stop"
+	        },
+	        "slideMoods": {
+	          "fox": "neutral",
+	          "falco": "happy",
+	          "jason": ""
+	        }
+	      */
+
+
+	    }
+	  }
+
+	  function resetStage() {
+	    //reset the stage
+	    currentStage.removeChildren();
+	    currentStage.addChild(bgSprite);
+	    currentActors.forEach(function (actorID) {
+	      currentStage.addChild(currentActorSprites[actorID] = new PIXI.Sprite());
+	    });
+	    currentStage.addChild(textBoxSprite);
+	    currentStage.addChild(speakerBoxSprite);
+	  }
+
+	  function resetAndAdvanceSlide() {
+	    resetStage();
+	    advanceSlide();
+	  }
+
+	  function stopSong(audioID) {
+	    if (audio.hasOwnProperty(audioID)) {
+	      audio[audioID].stop();
+	    }
+	  }
+
+	  function previousSlide() {
+	    currentActiveIndex -= 1;
+
+	  }
+
+
+
+	  function loadNewChapter(scriptID, index, endIndex) {
+	    __webpack_require__.e/* require */(3, function(__webpack_require__) { var __WEBPACK_AMD_REQUIRE_ARRAY__ = [__webpack_require__(11)("./" + scriptID)]; (function (scriptObj) {
+	      //now we have the script, lets do some setting
+	      currentScriptData = scriptObj.slides;
+	      currentScriptIndex = (index = index || 0) - 1;
+	      currentEndIndex = (endIndex = endIndex || currentScriptData.length - 1);
+	      currentActiveScriptID = (currentScriptID = scriptID);
+	      //set the game save data
+	      if (currentGameData.seenChapters.indexOf(scriptID) === -1) {
+	        currentGameData.seenChapters.push(scriptID);
+	      }
+	      currentGameData.chaptersRange[scriptID] = [index, endIndex];
+	      currentGameData.currentChapterIndex = currentScriptIndex;
+	      currentGameData.currentChapter = scriptID;
+	      currentActors = scriptObj.actors;
+	      currentBgs = scriptObj.bgs;
+	      currentChoices = scriptObj.choices;
+	      currentColorMap = scriptObj.colorMap;
+	      currentMusic = scriptObj.music;
+	      currentSelected = new Function('choice', 'novelData', 'goto', scriptObj.selected);
+	      globalState.setStage(currentStage);
+	      images.loadNovelAssets(currentActors, currentBgs, resetAndAdvanceSlide);
+	      currentMusic.forEach(stopSong);
+	    }.apply(null, __WEBPACK_AMD_REQUIRE_ARRAY__));});
+	  }
+
+	  function loadGame(gameID) {
+	    if (gameID in localStorage) {
+	      currentGameData = JSON.parse(localStorage.getItem(gameID));
+	      loadChapter(currentGameData.currentChapter, currentGameData.currentChapterIndex);
+	    } else {
+	      throw new Error("Game not found!");
+	    }
+	  }
+	  exports.loadGame = loadGame;
+
+	  function newGame(scriptID, index) {
+	    index = index || 0;
+	    var gameSaveIndex,
+	      gameID = generateGameId();
+
+	    currentGameData = {
+	      gameID: gameID,
+	      seenChapters: ["scriptID"],
+	      chaptersRange: {
+	        "scriptID": [
+	            0, 100 //begining, end
+	          ]
+	      },
+	      currentChapterIndex: index,
+	      currentChapter: scriptID,
+	      gameData: {}
+	    };
+
+	    localStorage.setItem(gameID, currentGameData);
+	    if ('gameSaveIndex' in localStorage) {
+	      gameSaveIndex = JSON.parse(localStorage.getItem('gameSaveIndex'));
+	    } else {
+	      gameSaveIndex = [];
+	    }
+
+	    if (gameSaveIndex.indexOf(gameID) === -1) {
+	      gameSaveIndex.push(gameID);
+	    }
+
+	    localStorage.setItem('gameSaveIndex', JSON.stringify(gameSaveIndex));
+	    loadNewChapter(scriptID, index);
+	  }
+	  exports.newGame = newGame;
+
+	  return exports;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_RESULT__ = function (PIXI, config) {
+	  'use strict';
+	  var images = config.images,
+	      repo = document.querySelector('#imageRepo');
+	  
+	  Object.getOwnPropertyNames(images).forEach(function(imageType) {
+	    var subTypes = images[imageType],
+	        subTypeKeys = Object.getOwnPropertyNames(subTypes);
+	    subTypeKeys.forEach(function(key) {
+	      var img = document.createElement('img');
+	      img.dataset.src = images[imageType][key];
+	      img.dataset.type = imageType;
+	      img.dataset.subtype = key;
+	      img.id = imageType+":"+key;
+	      repo.appendChild(img);
+	    });
+	  });
+	  
 	  var imageQuery = [].slice.call(document.querySelectorAll("img")),
 	    lookup = {
 	      completed: false,
-	      loaded: loaded
+	      loaded: loaded,
+	      loadNovelAssets: loadNovelAssets
 	    },
 	    filter = [].filter,
 	    forEach = [].forEach;
@@ -128,7 +400,26 @@ webpackJsonp([1],[
 	      tag.onload = addCompleteImage;
 	    }
 	  }
-
+	  
+	  function getActorImages(actorID) {
+	    return [].map.call(document.querySelectorAll('[data-type='+actorID+']'), function(element) {
+	      return element.id;
+	    });
+	  }
+	  
+	  function getBackgroundImages(bg) {
+	    return 'bg:'+bg;
+	  }
+	  
+	  function loadNovelAssets(actors, bgs) {
+	    var actorMap = actors.map(getActorImages);
+	    return loaded.apply(lookup, [
+	      actorMap.reduce(function(left, right) {
+	        return left.concat(right); //add each actor's images to the query
+	      }, []).concat(bgs.map(getBackgroundImages)) //query
+	    ].concat([].slice.call(arguments, 2)));
+	  }
+	  
 	  function loaded(query) {
 	    var args = [].slice.call(arguments, 1),
 	      interval = setInterval(function check() {
@@ -169,10 +460,10 @@ webpackJsonp([1],[
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(5), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_RESULT__ = function(config, PIXI){
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(6), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_RESULT__ = function(config, PIXI){
 	  'use strict';
 	  var animationFuncs = [],
 	      _stage = new PIXI.Stage(0x000000),
@@ -231,7 +522,7 @@ webpackJsonp([1],[
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2)], __WEBPACK_AMD_DEFINE_RESULT__ = function (PIXI) {
@@ -242,12 +533,24 @@ webpackJsonp([1],[
 	      'opening': '/tracks/183008205',
 	      'goatFinalBoss': '/tracks/165965394'
 	    },
+	    images = {
+	      'fox': {
+	        'neutral': 'images/compressed/meh.png'
+	      },
+	      'falco': {
+	        'happy': 'images/compressed/neutral.png'
+	      },
+	      'bg': {
+	        'school': 'images/compressed/pic_056.jpg'
+	      }
+	    },
 	    config = {
 	      width: width,
 	      height: height,
 	      renderer: PIXI.autoDetectRenderer(width, height),
 	      stageColor: 0xFFFFFF,
 	      audio: audio,
+	      images: images,
 	      textboxColor: 0x0011FF,
 	      textboxAlpha: 0.7,
 	      textboxRadius: 3,
@@ -260,6 +563,292 @@ webpackJsonp([1],[
 	  document.querySelector("#container").appendChild(config.renderer.view);
 	 
 	  return config;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ },
+/* 7 */,
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
+	  'use strict';
+
+	  function guid() {
+	    function p8(s) {
+	      var p = (Math.random().toString(16) + "000000000").substr(2, 8);
+	      return s ? "-" + p.substr(0, 4) + "-" + p.substr(4, 4) : p;
+	    }
+	    return p8() + p8(true) + p8(true) + p8();
+	  }
+
+	  return guid;
+	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(6), __webpack_require__(16)], __WEBPACK_AMD_DEFINE_RESULT__ = function defineAudio(config, SC) {
+	  'use strict';
+	  var tracks = config.audio,
+	    titles = [],
+	    loadedTitles = [],
+	    callbacks = [],
+	    repeatSong = {
+	      onfinish: repeatSongFunc
+	    },
+	    html5AudioOptions = {
+	      useHTML5Audio: true,
+	      preferFlash: false
+	    },
+	    audio = {
+	      loaded: loaded,
+	      completed: false,
+	      repeatSong: repeatSong
+	    };
+
+	  function repeatSongFunc() {
+	    this.play(repeatSong);
+	  }
+
+	  function exec(func) {
+	    func();
+	  }
+
+	  function loaded() {
+	    [].push.apply(callbacks, [].slice.call(arguments));
+
+	    if (audio.completed) {
+	      setTimeout(execCallbacks);
+	    }
+
+	    return this;
+	  }
+
+	  function loadTitle(title) {
+	    SC.stream(tracks[title], html5AudioOptions, function (sound) {
+	      audio[title] = sound;
+	      loadedTitles.push(title);
+	      if (loadedTitles.length === titles.length) {
+	        audio.completed = true;
+	        execCallbacks();
+	      }
+	    });
+	  }
+
+	  function execCallbacks() {
+	    callbacks.forEach(exec);
+	    callbacks = [];
+	  }
+
+	  SC.initialize({
+	    client_id: '10b30c7d0c8854864b5901f3c7ef47d9'
+	  });
+
+	  titles = Object.getOwnPropertyNames(tracks);
+	  window.addEventListener("load", [].forEach.bind(titles, loadTitle), false);
+	  
+	  return audio;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(17)], __WEBPACK_AMD_DEFINE_RESULT__ = function (positions) {
+	  'use strict';
+	  
+	  var frameCount = 60;
+
+	  function createAnimationFunction(sprite, newPositions) {
+	    var fromX = sprite.position.x,
+	      fromY = sprite.position.y,
+	      fromR = sprite.position.rotation,
+	      fromA = sprite.alpha,
+	      i = 0;
+
+
+	    sprite = newPositions.reduce(function (left, right) {
+	      return positions[right](sprite);
+	    }, sprite);
+
+
+	    var toX = sprite.position.x,
+	      toY = sprite.position.y,
+	      toR = sprite.position.rotation,
+	      toA = sprite.alpha,
+	      animateX = toX !== fromX,
+	      animateY = toY !== fromY,
+	      animateR = toR !== fromR,
+	      animateA = toA !== fromA,
+	      dX = toX - fromX,
+	      dY = toY - fromY,
+	      dR = toR - fromR,
+	      dA = toA - fromA;
+
+	    return function () {
+	      i += 1;
+	      var ratio = i / frameCount;
+	      if (animateX) {
+	        sprite.position.x = fromX + dX * ratio;
+	      }
+	      if (animateY) {
+	        sprite.position.Y = fromY + dY * ratio;
+	      }
+	      if (animateR) {
+	        sprite.rotation = fromR + dR * ratio;
+	      }
+	      if (animateA) {
+	        sprite.alpha = fromA + dA * ratio;
+	      }
+	      return i === frameCount;
+	    };
+	  }
+	  return {
+	    createAnimationFunction: createAnimationFunction
+	  };
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ },
+/* 11 */,
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_RESULT__ = function(PIXI, config) {
+	  var textbox = new PIXI.Graphics();
+	  
+	  textbox.beginFill(config.textboxColor, config.textboxAlpha);
+	  textbox.lineStyle(config.textboxLineWidth, config.textboxLineColor, config.textboxLineAlpha);
+	  textbox.drawRoundedRect(0, 0, config.width - 100, 40, config.textboxRadius);
+	  
+	  return textbox.generateTexture();
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_RESULT__ = function(PIXI, config) {
+	  var textbox = new PIXI.Graphics();
+	  
+	  textbox.beginFill(config.textboxColor, config.textboxAlpha);
+	  textbox.lineStyle(config.textboxLineWidth, config.textboxLineColor, config.textboxLineAlpha);
+	  textbox.drawRoundedRect(0, 0, config.width - 100, 200, config.textboxRadius);
+	  
+	  return textbox.generateTexture();
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ },
+/* 14 */,
+/* 15 */,
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function() {
+	  'use strict';
+	  
+	  return SC;
+	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(6)], __WEBPACK_AMD_DEFINE_RESULT__ = function (config) {
+	  'use strict';
+
+	  function stageLeft(sprite) {
+	    sprite.postion.x = -sprite.width / 2;
+	    return sprite;
+	  }
+
+	  function stageRight(sprite) {
+	    sprite.postion.x = config.width + sprite.width / 2;
+	    return sprite;
+	  }
+
+	  function left2(sprite) {
+	    sprite.postion.x = config.width / 3;
+	    return sprite;
+	  }
+
+	  function right2(sprite) {
+	    sprite.postion.x = 2 * config.width / 3;
+	    return sprite;
+	  }
+
+	  function center(sprite) {
+	    sprite.postion.x = config.width / 2;
+	    return sprite;
+	  }
+
+	  function standing(sprite) {
+	    sprite.postion.y = config.height / 2;
+	    return sprite;
+	  }
+
+	  function sitting(sprite) {
+	    sprite.position.y = 5 * config.height / 8;
+	    return sprite;
+	  }
+
+	  function fallLeft(sprite) {
+	    sprite.rotation = -Math.PI / 2;
+	    return sprite;
+	  }
+
+	  function fallRight(sprite) {
+	    sprite.rotation = Math.PI / 2;
+	    return sprite;
+	  }
+
+	  function centerHeight(sprite) {
+	    sprite.position.y = config.height / 2;
+	    return sprite;
+	  }
+
+	  function bottomHeight(sprite) {
+	    sprite.position.y = config.height;
+	    return sprite;
+	  }
+
+	  function belowScreen(sprite) {
+	    sprite.position.y = config.height + sprite.height / 2;
+	    return sprite;
+	  }
+
+	  function aboveScreen(sprite) {
+	    sprite.position.y = -sprite.height / 2;
+	    return sprite;
+	  }
+
+	  function left3(sprite) {
+	    sprite.position.x = config.width / 4.5;
+	    return sprite;
+	  }
+
+	  function right3(sprite) {
+	    sprite.position.x = config.width * 3.5 / 4.5;
+	    return sprite;
+	  }
+
+	  return {
+	    stageLeft: stageLeft,
+	    stageRight: stageRight,
+	    center: center,
+	    left2: left2,
+	    right2: right2,
+	    standing: standing,
+	    sitting: sitting,
+	    fallLeft: fallLeft,
+	    fallRight: fallRight,
+	    centerHeight: centerHeight,
+	    bottomHeight: bottomHeight,
+	    belowScreen: belowScreen,
+	    aboveScreen: aboveScreen,
+	    left3: left3,
+	    right3: right3
+	  };
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ }

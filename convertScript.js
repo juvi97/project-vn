@@ -50,10 +50,10 @@ function parseAndConvert(str) {
     slideArrayResult = [],
     slideText = "",
     slideSpeaker = "",
-    slideAnimations = {},
     slidePositions = {},
     slideMusic = {},
     slideMoods = {},
+    slideAnimation = true,
     cachedSlidePositions = scriptObject.actors.reduce(function (left, right) {
       left[right] = "";
       return left;
@@ -67,60 +67,51 @@ function parseAndConvert(str) {
       return left;
     }, {});
 
-
+  
   index = script.indexOf('!BeginSlide', index);
   while (index > -1) {
-    console.log("slide detected");
+    
     endSlideIndex = script.indexOf('!EndSlide', index);
     if (endSlideIndex === -1) {
       throw new Error("No end of slide found!");
     }
 
     slideText = "";
-    slideBg = "";
-    slideAnimations = {};
+    slideAnimation = true;
     slidePositions = {};
     slideMusic = {};
     slideMoods = {};
     slideStr = script.slice(index + 11, endSlideIndex);
-    slideArray = slideStr.replace('\r', '\n').split('\n').map(trimToLowerCase).filter(stringHasLength);
-
+    slideArray = slideStr.replace('\r', '\n').split('\n').map(function(line) {
+      return line.trim();
+    }).filter(stringHasLength);
+    
+    
     slideArray.forEach(function (line) {
-      var tempIndex, tempEndIndex, animationsArray;
+      var lowerLine = line.toLowerCase(),
+          tempIndex, tempEndIndex, animationsArray;
       //for each line in the slide array figure out what is declared
-
+      
       //text
-      if (line.indexOf("!Text:") > -1) {
-        slideText = line.slice(line.indexOf("!Text:") + 6);
+      tempIndex = lowerLine.indexOf("!text:");
+      if (tempIndex> -1) {
+        slideText = line.slice(tempIndex + 6).trim();
         return;
       }
       //speaker
-      if (line.indexOf("!Speaker:") > -1) {
-        slideSpeaker = line.slice(line.indexOf("!Speaker:") + 9);
+      tempIndex = lowerLine.indexOf("!speaker:");
+      if (tempIndex > -1) {
+        slideSpeaker = line.slice(tempIndex + 9).trim();
         return;
       }
-
-      if (line.indexOf("!Bg:") > -1) {
-        slideBg = line.slice(line.indexOf("!Bg:") + 6);
+      tempIndex = lowerLine.indexOf("!bg:");
+      if (tempIndex > -1) {
+        slideBg = line.slice(tempIndex + 4).trim();
         return;
       }
-
-      //animations
-      if (line.indexOf('!Animations:') > -1) {
-        tempIndex = slideStr.indexOf('!Animations:') + 12;
-        tempEndIndex = slideStr.indexOf('!EndAnimations');
-        if (tempEndIndex === -1) {
-          throw new Error("No end of Animations found!");
-        }
-        animationsArray = slideStr.slice(tempIndex, tempEndIndex).replace('\r', '\n').split('\n').map(trimToLowerCase).filter(stringHasLength);
-        animationsArray.forEach(function (animationLine) {
-          var result;
-          if (animationLine.indexOf(':') > 0) {
-            result = animationLine.split(':');
-            slideAnimations[trimToLowerCase(result[0])] = (result[1] || "").split(',').map(trimToLowerCase).filter(stringHasLength);
-          }
-        });
-        return;
+      
+      if (lowerLine.indexOf('!noanimation') > -1) {
+        slideAnimation = false;
       }
     });
 
@@ -128,11 +119,14 @@ function parseAndConvert(str) {
     slidePositions = loadCommand('!Positions', '!EndPositions', slideStr, scriptObject.actors, cachedSlidePositions);
     slideMusic = loadCommand('!Music', '!EndMusic', slideStr, scriptObject.music, cachedMusicState);
     slideMoods = loadCommand('!Moods', '!EndMoods', slideStr, scriptObject.actors, cachedMoodsState);
+    if (slideArrayResult.length === 0) {
+      slideAnimation = false;
+    }
     slideArrayResult.push({
       slideText: slideText,
       slideBg: slideBg,
       slideSpeaker: slideSpeaker,
-      slideAnimations: slideAnimations,
+      slideAnimation: slideAnimation,
       slidePositions: slidePositions,
       slideMusic: slideMusic,
       slideMoods: slideMoods
@@ -141,7 +135,7 @@ function parseAndConvert(str) {
     //reset index
     index = script.indexOf('!BeginSlide', index + 1);
   }
-
+  
   function loadCommand(command, endCommand, slideStr, keys, cache) {
     var tempIndex, tempEndIndex,
       result = {};

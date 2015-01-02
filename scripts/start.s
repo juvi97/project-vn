@@ -8,18 +8,13 @@ Falco: blue
 !Actors:
 Fox
 Falco
-Jason
 !EndActors
 
 !Bgs:
-BG1
-BG2
+school
 !EndBgs
 
 !Musics:
-id1
-id2
-id3
 !EndMusics
 
 !Script:
@@ -27,13 +22,14 @@ id3
   !BeginSlide
   !Speaker: Fox
   !Text: This is what the fox says \nNew Line
+  !Bg: school
   !Positions:
-    Fox: left-2
-    Falco: right-2
+    Fox: left2,standing
+    Falco: right2,standing
   !EndPositions
   !Animations:
-    Fox: enter-stage-left
-    Falco: enter-stage-right
+    Fox: enterstagelefttoleft2
+    Falco: enterstagelefttoright2
   !EndAnimations
   !Moods:
     Fox: neutral
@@ -60,7 +56,18 @@ id3
   !Text: Here I come!
   !EndSlide
   
-  
+  !BeginSlide
+  !Speaker: Fox
+  !Positions:
+  	Fox: left2,standing
+    Falco: right2,standing
+  !EndPositions
+  !Animations:
+    Fox: standing
+    Falco: standing
+  !EndAnimations
+  !Text: Here I come!
+  !EndSlide
 !EndScript
 
 !Choices:
@@ -73,5 +80,10 @@ shnair: Do a Shorthop Nair
 if (choice === 'waveshine') {
 	novelData.fox++; // add a point to fox
 	novelData.falco--; // remove a point from falco
+} else {
+    novelData.falco--;
+    novelData.fox++;
 }
+//goto specifies a new script to go to
+goto('scriptid', 0, 100);
 !EndSelected

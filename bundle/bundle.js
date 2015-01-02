@@ -96,9 +96,9 @@
 
 	;;
 
-	__webpack_require__.e/* require */(1, function(__webpack_require__) { var __WEBPACK_AMD_REQUIRE_ARRAY__ = [__webpack_require__(1), __webpack_require__(2)]; (function (vn, PIXI) {
+	__webpack_require__.e/* require */(1, function(__webpack_require__) { var __WEBPACK_AMD_REQUIRE_ARRAY__ = [__webpack_require__(1), __webpack_require__(2), __webpack_require__(3)]; (function (vn, PIXI, script) {
 	  'use strict';
-	  vn.openScreen('main');
+	  script.newGame('start', 0);
 	}.apply(null, __WEBPACK_AMD_REQUIRE_ARRAY__));});
 
 /***/ }

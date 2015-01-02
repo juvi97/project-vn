@@ -6,12 +6,24 @@ define(['./pixi'], function (PIXI) {
       'opening': '/tracks/183008205',
       'goatFinalBoss': '/tracks/165965394'
     },
+    images = {
+      'fox': {
+        'neutral': 'images/compressed/meh.png'
+      },
+      'falco': {
+        'happy': 'images/compressed/neutral.png'
+      },
+      'bg': {
+        'school': 'images/compressed/pic_056.jpg'
+      }
+    },
     config = {
       width: width,
       height: height,
       renderer: PIXI.autoDetectRenderer(width, height),
       stageColor: 0xFFFFFF,
       audio: audio,
+      images: images,
       textboxColor: 0x0011FF,
       textboxAlpha: 0.7,
       textboxRadius: 3,

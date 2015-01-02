@@ -49,12 +49,6 @@ define(['./images', './globalState', './config', './pixi'], function (images, gl
     require(['./screens/' + screen], loadScreen);
   }
 
-  function openStory(storyDesc, index) {
-    require(['./scripts/' + storyDesc], function indexStory(story) {
-      
-    });
-  }
-
   function overlayScreen(screenID) {
     var image = config.renderer.view.toDataURL(),
         backgroundTexture = PIXI.Texture.fromImage(image);
@@ -66,15 +60,8 @@ define(['./images', './globalState', './config', './pixi'], function (images, gl
     */
   }
 
-  
-
-  function advanceSlide() {
-    
-  }
-
   return {
     openScreen: openScreen,
-    overlayScreen: overlayScreen,
-    openStory: openStory
+    overlayScreen: overlayScreen
   };
 });

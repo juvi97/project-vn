@@ -1,11 +1,11 @@
 webpackJsonp([3],{
 
-/***/ 7:
+/***/ 11:
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./start": 9,
-		"./start.js": 9
+		"./start": 15,
+		"./start.js": 15
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -18,19 +18,19 @@ webpackJsonp([3],{
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 7;
+	webpackContext.id = 11;
 
 
 /***/ },
 
-/***/ 9:
+/***/ 15:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
 	  return {
-	    "actors": ["fox", "falco", "jason"],
-	    "bgs": ["bg1", "bg2"],
-	    "music": ["id1", "id2", "id3"],
+	    "actors": ["fox", "falco"],
+	    "bgs": ["school"],
+	    "music": [],
 	    "colorMap": {
 	      "jason": "red",
 	      "fox": "green",
@@ -41,47 +41,49 @@ webpackJsonp([3],{
 	      "shnair": "Do a Shorthop Nair"
 	    },
 	    "slides": [{
-	      "slideText": "",
-	      "slideBg": "",
-	      "slideSpeaker": "",
-	      "slideAnimations": {},
+	      "slideText": "This is what the fox says \\nNew Line",
+	      "slideBg": "school",
+	      "slideSpeaker": "Fox",
+	      "slideAnimation": false,
 	      "slidePositions": {
-	        "fox": "left-2",
-	        "falco": "right-2",
-	        "jason": ""
+	        "fox": "left2,standing",
+	        "falco": "right2,standing"
 	      },
-	      "slideMusic": {
-	        "id1": "stop",
-	        "id2": "pause",
-	        "id3": "stop"
-	      },
+	      "slideMusic": {},
 	      "slideMoods": {
 	        "fox": "neutral",
-	        "falco": "happy",
-	        "jason": ""
+	        "falco": "happy"
 	      }
 	    }, {
-	      "slideText": "",
-	      "slideBg": "",
-	      "slideSpeaker": "",
-	      "slideAnimations": {},
+	      "slideText": "Here I come!",
+	      "slideBg": "school",
+	      "slideSpeaker": "Fox",
+	      "slideAnimation": true,
 	      "slidePositions": {
-	        "fox": "left-2,sitting",
-	        "falco": "right-2,sitting",
-	        "jason": ""
+	        "fox": "left2,sitting",
+	        "falco": "right2,sitting"
 	      },
-	      "slideMusic": {
-	        "id1": "stop",
-	        "id2": "pause",
-	        "id3": "stop"
-	      },
+	      "slideMusic": {},
 	      "slideMoods": {
 	        "fox": "neutral",
-	        "falco": "happy",
-	        "jason": ""
+	        "falco": "happy"
+	      }
+	    }, {
+	      "slideText": "Here I come!",
+	      "slideBg": "school",
+	      "slideSpeaker": "Fox",
+	      "slideAnimation": true,
+	      "slidePositions": {
+	        "fox": "left2,standing",
+	        "falco": "right2,standing"
+	      },
+	      "slideMusic": {},
+	      "slideMoods": {
+	        "fox": "neutral",
+	        "falco": "happy"
 	      }
 	    }],
-	    "selected": "\r\n//javascript goes here\r\nif (choice === 'waveshine') {\r\n\tnovelData.fox++; // add a point to fox\r\n\tnovelData.falco--; // remove a point from falco\r\n}\r\n"
+	    "selected": "\r\n//javascript goes here\r\nif (choice === 'waveshine') {\r\n\tnovelData.fox++; // add a point to fox\r\n\tnovelData.falco--; // remove a point from falco\r\n} else {\r\n    novelData.falco--;\r\n    novelData.fox++;\r\n}\r\n//goto specifies a new script to go to\r\ngoto('scriptid', 0, 100);\r\n"
 	  };
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 

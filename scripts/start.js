@@ -1,8 +1,8 @@
 define(function () {
   return {
-    "actors": ["fox", "falco", "jason"],
-    "bgs": ["bg1", "bg2"],
-    "music": ["id1", "id2", "id3"],
+    "actors": ["fox", "falco"],
+    "bgs": ["school"],
+    "music": [],
     "colorMap": {
       "jason": "red",
       "fox": "green",
@@ -13,46 +13,48 @@ define(function () {
       "shnair": "Do a Shorthop Nair"
     },
     "slides": [{
-      "slideText": "",
-      "slideBg": "",
-      "slideSpeaker": "",
-      "slideAnimations": {},
+      "slideText": "This is what the fox says \\nNew Line",
+      "slideBg": "school",
+      "slideSpeaker": "Fox",
+      "slideAnimation": false,
       "slidePositions": {
-        "fox": "left-2",
-        "falco": "right-2",
-        "jason": ""
+        "fox": "left2,standing",
+        "falco": "right2,standing"
       },
-      "slideMusic": {
-        "id1": "stop",
-        "id2": "pause",
-        "id3": "stop"
-      },
+      "slideMusic": {},
       "slideMoods": {
         "fox": "neutral",
-        "falco": "happy",
-        "jason": ""
+        "falco": "happy"
       }
     }, {
-      "slideText": "",
-      "slideBg": "",
-      "slideSpeaker": "",
-      "slideAnimations": {},
+      "slideText": "Here I come!",
+      "slideBg": "school",
+      "slideSpeaker": "Fox",
+      "slideAnimation": true,
       "slidePositions": {
-        "fox": "left-2,sitting",
-        "falco": "right-2,sitting",
-        "jason": ""
+        "fox": "left2,sitting",
+        "falco": "right2,sitting"
       },
-      "slideMusic": {
-        "id1": "stop",
-        "id2": "pause",
-        "id3": "stop"
-      },
+      "slideMusic": {},
       "slideMoods": {
         "fox": "neutral",
-        "falco": "happy",
-        "jason": ""
+        "falco": "happy"
+      }
+    }, {
+      "slideText": "Here I come!",
+      "slideBg": "school",
+      "slideSpeaker": "Fox",
+      "slideAnimation": true,
+      "slidePositions": {
+        "fox": "left2,standing",
+        "falco": "right2,standing"
+      },
+      "slideMusic": {},
+      "slideMoods": {
+        "fox": "neutral",
+        "falco": "happy"
       }
     }],
-    "selected": "\r\n//javascript goes here\r\nif (choice === 'waveshine') {\r\n\tnovelData.fox++; // add a point to fox\r\n\tnovelData.falco--; // remove a point from falco\r\n}\r\n"
+    "selected": "\r\n//javascript goes here\r\nif (choice === 'waveshine') {\r\n\tnovelData.fox++; // add a point to fox\r\n\tnovelData.falco--; // remove a point from falco\r\n} else {\r\n    novelData.falco--;\r\n    novelData.fox++;\r\n}\r\n//goto specifies a new script to go to\r\ngoto('scriptid', 0, 100);\r\n"
   };
 });

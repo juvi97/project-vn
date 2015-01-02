@@ -2,7 +2,7 @@ requirejs.config({
   waitSeconds: 0
 });
 
-require(['./vn', './pixi'], function (vn, PIXI) {
+require(['./vn', './pixi', './script'], function (vn, PIXI, script) {
   'use strict';
-  vn.openScreen('main');
+  script.newGame('start', 0);
 });
